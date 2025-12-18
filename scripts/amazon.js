@@ -47,10 +47,37 @@ products.forEach((product) => {
           Added
         </div>
 
-        <button class="add-to-cart-button button-primary">
+        <button class="add-to-cart-button button-primary js-add-to-cart"
+         data-product-name="${product.name}">
           Add to Cart
         </button>
       </div>
   `;
-});
+}); // data-product-name is called a data attribute. Use the word data- and anything you want
 allProducts.innerHTML = productsHTML;
+
+document.querySelectorAll('.js-add-to-cart').forEach((button) => button.addEventListener
+  ('click', () => {
+    let indexInCart = isInCart(button.dataset.productName);
+    if (indexInCart >= 0) { // if item already in cart, increase quantity
+      ++cart[indexInCart].productQuantity;
+    } else {
+      cart.push({ // if not, add to cart
+        productName: button.dataset.productName, //dataset gets the data- attributes, productName is the specific
+        productQuantity: 1 // atrubute (it automatically switches to cammel case)
+      })
+    }
+    console.log(cart);
+  }));
+
+/*
+helper function to check if an item already exists in the cart
+if item exists, return its index. If not, return -1
+*/
+function isInCart(productName) {
+  for (let i = 0; i < cart.length; ++i) {
+    if (cart[i].productName === productName)
+      return i;
+  }
+  return -1;
+}
