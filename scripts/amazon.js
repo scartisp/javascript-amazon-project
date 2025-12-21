@@ -1,6 +1,8 @@
-
+//DOM THINGS
 // div that holds all of the products on the main page
 const allProducts = document.querySelector('.js-products-gird');
+// div that holds the number displayed for the total in cart
+const cartQuantity = document.querySelector('.js-cart-quantity')
 
 let productsHTML = '';
 products.forEach((product) => {
@@ -26,7 +28,7 @@ products.forEach((product) => {
         </div>
 
         <div class="product-quantity-container">
-          <select>
+          <select class="js-quantity-selector-${product.id}">
             <option selected value="1">1</option>
             <option value="2">2</option>
             <option value="3">3</option>
@@ -48,7 +50,7 @@ products.forEach((product) => {
         </div>
 
         <button class="add-to-cart-button button-primary js-add-to-cart"
-         data-product-name="${product.name}">
+         data-product-id="${product.id}">
           Add to Cart
         </button>
       </div>
@@ -56,28 +58,39 @@ products.forEach((product) => {
 }); // data-product-name is called a data attribute. Use the word data- and anything you want
 allProducts.innerHTML = productsHTML;
 
-document.querySelectorAll('.js-add-to-cart').forEach((button) => button.addEventListener
+document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventListener
   ('click', () => {
-    let indexInCart = isInCart(button.dataset.productName);
+    let productId = button.dataset.productId
+    let indexInCart = isInCart(productId);
     if (indexInCart >= 0) { // if item already in cart, increase quantity
-      ++cart[indexInCart].productQuantity;
+      cart[indexInCart].productQuantity+= Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
     } else {
       cart.push({ // if not, add to cart
-        productName: button.dataset.productName, //dataset gets the data- attributes, productName is the specific
-        productQuantity: 1 // atrubute (it automatically switches to cammel case)
+        productId: productId, //dataset gets the data-attributes, productName is the specific
+        productQuantity: Number(document.querySelector(`.js-quantity-selector-${productId}`).value) // atrubute (it automatically switches to cammel case)
       })
     }
-    console.log(cart);
+    calculateCartQuntatity();
   }));
 
 /*
 helper function to check if an item already exists in the cart
 if item exists, return its index. If not, return -1
 */
-function isInCart(productName) {
+function isInCart(productId) {
   for (let i = 0; i < cart.length; ++i) {
-    if (cart[i].productName === productName)
+    if (cart[i].productId === productId)
       return i;
   }
   return -1;
+}
+
+/*
+helper function for calulating number to display for the cart on the homepage
+*/
+function calculateCartQuntatity() {
+  let quantity = 0;
+  cart.forEach(product => quantity+= product.productQuantity);
+  console.log(typeof(quantity))
+  cartQuantity.innerHTML = quantity;
 }
