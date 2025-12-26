@@ -1,3 +1,5 @@
+// written by: Simion Cartis
+
 //DOM THINGS
 // div that holds all of the products on the main page
 const allProducts = document.querySelector('.js-products-gird');
@@ -44,7 +46,7 @@ products.forEach((product) => {
 
         <div class="product-spacer"></div>
 
-        <div class="added-to-cart">
+        <div class="added-to-cart js-added-to-cart${product.id}">
           <img src="images/icons/checkmark.png">
           Added
         </div>
@@ -61,9 +63,10 @@ allProducts.innerHTML = productsHTML;
 document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventListener
   ('click', () => {
     let productId = button.dataset.productId
+    showAndHideAdded(productId);
     let indexInCart = isInCart(productId);
     if (indexInCart >= 0) { // if item already in cart, increase quantity
-      cart[indexInCart].productQuantity+= Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
+      cart[indexInCart].productQuantity += Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
     } else {
       cart.push({ // if not, add to cart
         productId: productId, //dataset gets the data-attributes, productName is the specific
@@ -73,10 +76,27 @@ document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventLi
     calculateCartQuntatity();
   }));
 
-/*
-helper function to check if an item already exists in the cart
-if item exists, return its index. If not, return -1
-*/
+  /**
+   * helper function for showing and hiding the "added" message
+   * hideAddedTimeoutId is a js object that acts like a hash map,
+   * the keys are product id and the values are their timeout ids
+   * @param {string} productId takes in a parameter of type string to identify the product by its ID
+   */
+  const hideAddedTimeoutId = {};
+  function showAndHideAdded(productId) {
+    const addedToCart = document.querySelector(`.js-added-to-cart${productId}`)
+    addedToCart.classList.add('added-to-cart-visible');
+    clearTimeout(hideAddedTimeoutId[productId]);
+    hideAddedTimeoutId[productId]= setTimeout(() => {
+      addedToCart.classList.remove('added-to-cart-visible');
+    }, 2000);
+  }
+
+/**
+ * helper function to check if an item already exists in the cart.
+ * @param {string} productId takes in a parameter of type string to identify the product by its ID 
+ * @returns if item exists, return its index, if not return -1
+ */
 function isInCart(productId) {
   for (let i = 0; i < cart.length; ++i) {
     if (cart[i].productId === productId)
@@ -85,12 +105,11 @@ function isInCart(productId) {
   return -1;
 }
 
-/*
-helper function for calulating number to display for the cart on the homepage
-*/
+/**
+ * helper function for calulating number to display for the cart on the homepage
+ */
 function calculateCartQuntatity() {
   let quantity = 0;
-  cart.forEach(product => quantity+= product.productQuantity);
-  console.log(typeof(quantity))
+  cart.forEach(product => quantity += product.productQuantity);
   cartQuantity.innerHTML = quantity;
 }
