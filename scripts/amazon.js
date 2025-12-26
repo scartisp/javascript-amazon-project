@@ -1,10 +1,15 @@
 // written by: Simion Cartis
 
+//IMPORTED THINGS
+// import by using keyword import {thing to imnport} keyword from, and then path
+import { cart, isInCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
+// Example: import {cart as myCart} ...
+import { products } from '../data/products.js';
 //DOM THINGS
 // div that holds all of the products on the main page
 const allProducts = document.querySelector('.js-products-gird');
 // div that holds the number displayed for the total in cart
-const cartQuantity = document.querySelector('.js-cart-quantity')
+const cartQuantity = document.querySelector('.js-cart-quantity');
 
 let productsHTML = '';
 products.forEach((product) => {
@@ -60,6 +65,7 @@ products.forEach((product) => {
 }); // data-product-name is called a data attribute. Use the word data- and anything you want
 allProducts.innerHTML = productsHTML;
 
+// adds functionality for the "add product" button that each product has
 document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventListener
   ('click', () => {
     let productId = button.dataset.productId
@@ -76,33 +82,20 @@ document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventLi
     calculateCartQuntatity();
   }));
 
-  /**
-   * helper function for showing and hiding the "added" message
-   * hideAddedTimeoutId is a js object that acts like a hash map,
-   * the keys are product id and the values are their timeout ids
-   * @param {string} productId takes in a parameter of type string to identify the product by its ID
-   */
-  const hideAddedTimeoutId = {};
-  function showAndHideAdded(productId) {
-    const addedToCart = document.querySelector(`.js-added-to-cart${productId}`)
-    addedToCart.classList.add('added-to-cart-visible');
-    clearTimeout(hideAddedTimeoutId[productId]);
-    hideAddedTimeoutId[productId]= setTimeout(() => {
-      addedToCart.classList.remove('added-to-cart-visible');
-    }, 2000);
-  }
-
 /**
- * helper function to check if an item already exists in the cart.
- * @param {string} productId takes in a parameter of type string to identify the product by its ID 
- * @returns if item exists, return its index, if not return -1
+ * helper function for showing and hiding the "added" message
+ * hideAddedTimeoutId is a js object that acts like a hash map,
+ * the keys are product id and the values are their timeout ids
+ * @param {string} productId takes in a parameter of type string to identify the product by its ID
  */
-function isInCart(productId) {
-  for (let i = 0; i < cart.length; ++i) {
-    if (cart[i].productId === productId)
-      return i;
-  }
-  return -1;
+const hideAddedTimeoutId = {};
+function showAndHideAdded(productId) {
+  const addedToCart = document.querySelector(`.js-added-to-cart${productId}`)
+  addedToCart.classList.add('added-to-cart-visible');
+  clearTimeout(hideAddedTimeoutId[productId]);
+  hideAddedTimeoutId[productId] = setTimeout(() => {
+    addedToCart.classList.remove('added-to-cart-visible');
+  }, 2000);
 }
 
 /**
