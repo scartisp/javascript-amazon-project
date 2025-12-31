@@ -1,7 +1,7 @@
 //written by: Simion Cartis
 //export keyword allows this variable to be accessed outside of the cart.js file
 export const cart = JSON.parse(localStorage.getItem('cart')) ||
-[]; //when putting thing in cart, simply adding the productId and the quantity.
+  []; //when putting thing in cart, simply adding the productId and the quantity.
 // then, the product name is searched for from the array in product.js
 // this technique is called normalizing the data
 
@@ -49,4 +49,14 @@ function isInCart(productId) {
       return i;
   }
   return -1;
+}
+
+/**
+ * function that finds the total amount of items in the cart (including duplicate items)
+ * @returns returns the number of items in the cart (including duplicates)
+ */
+export function numInCart() {
+  let quantity = 0;
+  cart.forEach(item => quantity += item.quantity);
+  return quantity;
 }

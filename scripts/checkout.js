@@ -1,19 +1,20 @@
 // written by Simion Cartis
 
 //IMPORTED THINGS
-import { cart, removeCartItem } from '../data/cart.js';
+import { cart, removeCartItem, numInCart } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { centsToDollars } from './utils/money.js';
 
 //DOM THINGS
 const orderSummary = document.querySelector('.js-order-summary');
 const returnToHomeLink = document.querySelector('.js-return-to-home-link');
-displayCart();
+displayHTML();
 
 /**
  * function that is first called to dynamically make the html and functionalities
  */
-function displayCart() {
+function displayHTML() {
+  updateReturnToHomeLink();
   createCartHTML();
   orderSummary.innerHTML = createCartHTML();
   deleteButton();
@@ -124,6 +125,11 @@ function deleteButton() {
       const productId = link.dataset.productId;
       removeCartItem(productId);
       document.querySelector(`.js-cart-item-container-${productId}`).remove();
+      updateReturnToHomeLink();
     });
   });
+}
+
+function updateReturnToHomeLink() {
+  returnToHomeLink.innerHTML = numInCart() === 1 ? numInCart() + ' item' : numInCart() + ' items';
 }

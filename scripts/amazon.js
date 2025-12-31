@@ -2,7 +2,7 @@
 
 //IMPORTED THINGS
 // import by using keyword import {thing to imnport} keyword from, and then path
-import { cart ,addToCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
+import { addToCart, numInCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
 // Example: import {cart as myCart} ...
 import { products } from '../data/products.js';
 import { centsToDollars } from './utils/money.js';
@@ -12,7 +12,7 @@ const allProducts = document.querySelector('.js-products-gird');
 // div that holds the number displayed for the total in cart
 const cartQuantity = document.querySelector('.js-cart-quantity');
 
-calculateCartQuntatity();
+cartQuantity.innerHTML = numInCart();
 
 let productsHTML = '';
 products.forEach((product) => {
@@ -74,7 +74,7 @@ document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventLi
     let productId = button.dataset.productId
     showAndHideAdded(productId);
     addToCart(productId);
-    calculateCartQuntatity();
+    cartQuantity.innerHTML = numInCart();
   }));
 
 /**
@@ -91,13 +91,4 @@ function showAndHideAdded(productId) {
   hideAddedTimeoutId[productId] = setTimeout(() => {
     addedToCart.classList.remove('added-to-cart-visible');
   }, 2000);
-}
-
-/**
- * helper function for calulating number to display for the cart on the homepage
- */
-function calculateCartQuntatity() {
-  let quantity = 0;
-  cart.forEach(product => quantity += product.quantity);
-  cartQuantity.innerHTML = quantity;
 }
