@@ -2,9 +2,10 @@
 
 //IMPORTED THINGS
 // import by using keyword import {thing to imnport} keyword from, and then path
-import { cart, isInCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
+import { cart , isInCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
 // Example: import {cart as myCart} ...
 import { products } from '../data/products.js';
+import { centsToDollars } from './utils/money.js';
 //DOM THINGS
 // div that holds all of the products on the main page
 const allProducts = document.querySelector('.js-products-gird');
@@ -31,7 +32,7 @@ products.forEach((product) => {
         </div>
 
         <div class="product-price">
-          $${(product.priceCents / 100).toFixed(2)}
+          $${centsToDollars(product.priceCents)}
         </div>
 
         <div class="product-quantity-container">

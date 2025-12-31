@@ -1,5 +1,5 @@
 //written by: Simion Cartis
-//export keyword allwos this variable to be accessed outside of the cart.js file
+//export keyword allows this variable to be accessed outside of the cart.js file
 export const cart = [{
   productId: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
   quantity: 2 
