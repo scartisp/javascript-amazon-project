@@ -2,7 +2,7 @@
 
 //IMPORTED THINGS
 // import by using keyword import {thing to imnport} keyword from, and then path
-import { cart , isInCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
+import { cart ,addToCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
 // Example: import {cart as myCart} ...
 import { products } from '../data/products.js';
 import { centsToDollars } from './utils/money.js';
@@ -11,6 +11,8 @@ import { centsToDollars } from './utils/money.js';
 const allProducts = document.querySelector('.js-products-gird');
 // div that holds the number displayed for the total in cart
 const cartQuantity = document.querySelector('.js-cart-quantity');
+
+calculateCartQuntatity();
 
 let productsHTML = '';
 products.forEach((product) => {
@@ -71,15 +73,7 @@ document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventLi
   ('click', () => {
     let productId = button.dataset.productId
     showAndHideAdded(productId);
-    let indexInCart = isInCart(productId);
-    if (indexInCart >= 0) { // if item already in cart, increase quantity
-      cart[indexInCart].productQuantity += Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
-    } else {
-      cart.push({ // if not, add to cart
-        productId: productId, //dataset gets the data-attributes, productId is the specific
-        productQuantity: Number(document.querySelector(`.js-quantity-selector-${productId}`).value) // atrubute (it automatically switches to cammel case)
-      })
-    }
+    addToCart(productId);
     calculateCartQuntatity();
   }));
 
@@ -104,6 +98,6 @@ function showAndHideAdded(productId) {
  */
 function calculateCartQuntatity() {
   let quantity = 0;
-  cart.forEach(product => quantity += product.productQuantity);
+  cart.forEach(product => quantity += product.quantity);
   cartQuantity.innerHTML = quantity;
 }

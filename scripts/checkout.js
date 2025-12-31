@@ -7,7 +7,7 @@ import { centsToDollars } from './utils/money.js';
 
 //DOM THINGS
 const orderSummary = document.querySelector('.js-order-summary');
-
+const returnToHomeLink = document.querySelector('.js-return-to-home-link');
 displayCart();
 
 /**
