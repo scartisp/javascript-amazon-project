@@ -76,7 +76,7 @@ document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventLi
       cart[indexInCart].productQuantity += Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
     } else {
       cart.push({ // if not, add to cart
-        productId: productId, //dataset gets the data-attributes, productName is the specific
+        productId: productId, //dataset gets the data-attributes, productId is the specific
         productQuantity: Number(document.querySelector(`.js-quantity-selector-${productId}`).value) // atrubute (it automatically switches to cammel case)
       })
     }

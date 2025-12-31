@@ -1,25 +1,40 @@
 // written by Simion Cartis
 
 //IMPORTED THINGS
-import { cart } from '../data/cart.js';
+import { cart, removeCartItem } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { centsToDollars } from './utils/money.js';
 
 //DOM THINGS
 const orderSummary = document.querySelector('.js-order-summary');
 
-let cartSummaryHTML= '';
+displayCart();
 
+/**
+ * function that is first called to dynamically make the html and functionalities
+ */
+function displayCart() {
+  createCartHTML();
+  orderSummary.innerHTML = createCartHTML();
+  deleteButton();
+}
+
+/**
+ * helper function that creates the html for the cart
+ * @returns returns a string containing the cart's html
+ */
+function createCartHTML() {
+   let cartSummaryHTML = '';
 cart.forEach((cartItem) => {
-  const productId = cartItem.productId;
-  let matchingProduct;
-  products.forEach((product) => {
-    if (product.id === productId)
+    const productId = cartItem.productId;
+    let matchingProduct;
+    products.forEach((product) => {
+      if (product.id === productId)
         matchingProduct = product;
-  });
-  cartSummaryHTML +=
-  `
-    <div class="cart-item-container">
+    });
+    cartSummaryHTML +=
+      `
+    <div class="cart-item-container js-cart-item-container-${productId}">
       <div class="delivery-date">
         Delivery date: Tuesday, June 21
       </div>
@@ -42,7 +57,7 @@ cart.forEach((cartItem) => {
             <span class="update-quantity-link link-primary">
               Update
             </span>
-            <span class="delete-quantity-link link-primary">
+            <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${productId}">
               Delete
             </span>
           </div>
@@ -95,7 +110,20 @@ cart.forEach((cartItem) => {
       </div>
     </div>
   `;
-}); // the delivery date selector is of type "radio" basically, what that does is, if different selectors have the same
-// "name" attribute, only one can be slected at a time
+  }); // the delivery date selector is of type "radio" basically, what that does is, if different selectors have the same
+  // "name" attribute, only one can be slected at a time
+  return cartSummaryHTML;
+}
 
-orderSummary.innerHTML = cartSummaryHTML;
+/**
+ * helper function that creates the event listener for the delete button on a cart item
+ */
+function deleteButton() {
+  document.querySelectorAll('.js-delete-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      const productId = link.dataset.productId;
+      removeCartItem(productId);
+      document.querySelector(`.js-cart-item-container-${productId}`).remove();
+    });
+  });
+}
