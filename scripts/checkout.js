@@ -1,11 +1,11 @@
-// written by Simion Cartis
+// written by: Simion Cartis
 
-//IMPORTED THINGS
-import { cart, removeCartItem, numInCart } from '../data/cart.js';
+// IMPORTED THINGS
+import { cart, removeCartItem, numInCart, isInCart, changeAmount } from '../data/cart.js';
 import { products } from '../data/products.js';
 import { centsToDollars } from './utils/money.js';
 
-//DOM THINGS
+// DOM THINGS
 const orderSummary = document.querySelector('.js-order-summary');
 const returnToHomeLink = document.querySelector('.js-return-to-home-link');
 displayHTML();
@@ -18,6 +18,9 @@ function displayHTML() {
   createCartHTML();
   orderSummary.innerHTML = createCartHTML();
   deleteButton();
+  updateLink();
+  saveLink();
+  addButtonKeyListeners();
 }
 
 /**
@@ -25,8 +28,8 @@ function displayHTML() {
  * @returns returns a string containing the cart's html
  */
 function createCartHTML() {
-   let cartSummaryHTML = '';
-cart.forEach((cartItem) => {
+  let cartSummaryHTML = '';
+  cart.forEach((cartItem) => {
     const productId = cartItem.productId;
     let matchingProduct;
     products.forEach((product) => {
@@ -53,11 +56,13 @@ cart.forEach((cartItem) => {
           </div>
           <div class="product-quantity">
             <span>
-              Quantity: <span class="quantity-label">${cartItem.quantity}</span>
+              Quantity: <span class="quantity-label js-quantity-label${productId}">${cartItem.quantity}</span>
             </span>
-            <span class="update-quantity-link link-primary">
+            <span class="update-quantity-link link-primary js-update-quantity-link" data-product-id="${productId}">
               Update
             </span>
+            <input class="quantity-input js-quantity-input-${productId}"> </input>
+            <span class="save-quantity-link link-primary js-save-quantity-link" data-product-id="${productId}"> Save </span>
             <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${productId}">
               Delete
             </span>
@@ -130,6 +135,77 @@ function deleteButton() {
   });
 }
 
+/**
+ * pressing the upade link hides the link and allows you to change the desired item's quantity in cart
+ */
+function updateLink() {
+  document.querySelectorAll('.js-update-quantity-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      const productId = link.dataset.productId;
+      document.querySelector(`.js-cart-item-container-${productId}`).classList.add('is-editing-quantity');
+    });
+  });
+}
+
+/**
+ * pressing the save link will change whatever 
+ */
+function saveLink() {
+  document.querySelectorAll('.js-save-quantity-link').forEach((link) => {
+    link.addEventListener('click', () => {
+      const productId = link.dataset.productId;
+      saveFunctionality(productId);
+    });
+  });
+
+}
+/**
+ * 
+ * @param {string} productId the desired product's ID 
+ * @returns returns null if the new quantity is less than zero or greater than 1,000 or if the new quantity is left empty
+ */
+function saveFunctionality(productId) {
+  document.querySelector(`.js-cart-item-container-${productId}`).classList.remove('is-editing-quantity');
+  const indexInCart = isInCart(productId);
+  const newQuantity = Number(document.querySelector(`.js-quantity-input-${productId}`).value);
+  console.log(document.querySelector(`.js-quantity-input-${productId}`).value);
+  if (document.querySelector(`.js-quantity-input-${productId}`).value === '') {
+    console.error('no amount specified');
+    return;
+  }
+  else if (newQuantity < 0 || newQuantity > 1000) {
+    console.error('invalid amount');
+    return;
+  } else if (newQuantity === 0) {
+    removeCartItem(productId);
+    document.querySelector(`.js-cart-item-container-${productId}`).remove();
+  } else {
+    //cart[indexInCart].quantity = newQuantity;
+    changeAmount(indexInCart, newQuantity);
+    document.querySelector(`.js-quantity-label${productId}`).innerHTML = newQuantity;
+  }
+  updateReturnToHomeLink();
+}
+/**
+ * adds key listeners to the document
+ * Enter: pressing enter will change the amount of any item in the cart whose quantity is currently being edited
+ */
+function addButtonKeyListeners() {
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter') {
+      document.querySelectorAll('.js-save-quantity-link').forEach((link) => {
+        const productId = link.dataset.productId;
+        if (document.querySelector(`.js-cart-item-container-${productId}`).classList.contains('is-editing-quantity')) {
+          saveFunctionality(productId);
+        }
+      });
+    }
+  });
+}
+
+/**
+ * function that updates the number found at the top of the checkout page
+ */
 function updateReturnToHomeLink() {
   returnToHomeLink.innerHTML = numInCart() === 1 ? numInCart() + ' item' : numInCart() + ' items';
 }
