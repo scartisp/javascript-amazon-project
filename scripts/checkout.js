@@ -2,20 +2,20 @@
 
 // IMPORTED THINGS
 import { cart, removeCartItem, numInCart, isInCart, changeAmount } from '../data/cart.js';
-import { products } from '../data/products.js';
+import deliveryOptions from '../data/deliveryOptions.js';
+import { products } from '../data/products.js'; //this is called a named export, used when files export multipe things
 import { centsToDollars } from './utils/money.js';
-
+import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js' // without the {} it is called the default export, used when wanting to export a single thing
 // DOM THINGS
 const orderSummary = document.querySelector('.js-order-summary');
 const returnToHomeLink = document.querySelector('.js-return-to-home-link');
 displayHTML();
-
 /**
  * function that is first called to dynamically make the html and functionalities
  */
 function displayHTML() {
   updateReturnToHomeLink();
-  createCartHTML();
+  //createCartHTML();
   orderSummary.innerHTML = createCartHTML();
   deleteButton();
   updateLink();
@@ -73,45 +73,7 @@ function createCartHTML() {
           <div class="delivery-options-title">
             Choose a delivery option:
           </div>
-          <div class="delivery-option">
-            <input type="radio" checked
-              class="delivery-option-input"
-              name="delivery-option-${productId}">
-            <div>
-              <div class="delivery-option-date">
-                Tuesday, June 21
-              </div>
-              <div class="delivery-option-price">
-                FREE Shipping
-              </div>
-            </div>
-          </div>
-          <div class="delivery-option">
-            <input type="radio"
-              class="delivery-option-input"
-              name="delivery-option-${productId}">
-            <div>
-              <div class="delivery-option-date">
-                Wednesday, June 15
-              </div>
-              <div class="delivery-option-price">
-                $4.99 - Shipping
-              </div>
-            </div>
-          </div>
-          <div class="delivery-option">
-            <input type="radio"
-              class="delivery-option-input"
-              name="delivery-option-${productId}">
-            <div>
-              <div class="delivery-option-date">
-                Monday, June 13
-              </div>
-              <div class="delivery-option-price">
-                $9.99 - Shipping
-              </div>
-            </div>
-          </div>
+          ${deliverOptionsHTML(matchingProduct, cartItem)}
         </div>
       </div>
     </div>
@@ -119,6 +81,35 @@ function createCartHTML() {
   }); // the delivery date selector is of type "radio" basically, what that does is, if different selectors have the same
   // "name" attribute, only one can be slected at a time
   return cartSummaryHTML;
+}
+
+/**
+ * 
+ * @param {*} productId 
+ * @returns 
+ */
+function deliverOptionsHTML(matchingProduct, cartItem) {
+  let HTML = '';
+  const today = dayjs();
+  deliveryOptions.forEach((deliveryOption) => {
+    const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+    const priceString = deliveryOption.priceCents === 0 ? 'FREE Shipping' : `$${centsToDollars(deliveryOption.priceCents)} - Shipping`;
+    const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
+    HTML += `<div class="delivery-option">
+            <input type="radio" ${isChecked ? 'checked' : ''}
+              class="delivery-option-input"
+              name="delivery-option-${matchingProduct.id}">
+            <div>
+              <div class="delivery-option-date">
+                ${deliveryDate.format('dddd, MMMM D')}
+              </div>
+              <div class="delivery-option-price">
+                ${priceString}
+              </div>
+            </div>
+          </div>`;
+  })
+  return HTML;
 }
 
 /**

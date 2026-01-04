@@ -78,10 +78,10 @@ document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventLi
     cartQuantity.innerHTML = numInCart();
   }));
 
-  /**
-   * function that adds a selected item to the cart
-   * @param {string} productId the selected product's ID
-   */
+/**
+ * function that adds a selected item to the cart
+ * @param {string} productId the selected product's ID
+ */
 function addToCart(productId) {
   let indexInCart = isInCart(productId);
   if (indexInCart >= 0) { // if item already in cart, increase quantity
@@ -89,7 +89,8 @@ function addToCart(productId) {
   } else {
     cart.push({ // if not, add to cart
       productId: productId, //dataset gets the data-attributes, productId is the specific
-      quantity: Number(document.querySelector(`.js-quantity-selector-${productId}`).value) // atrubute (it automatically switches to cammel case)
+      quantity: Number(document.querySelector(`.js-quantity-selector-${productId}`).value), // atrubute (it automatically switches to cammel case)
+      deliveryOptionId: '1'
     });
   }
   saveToStorage();
