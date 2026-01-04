@@ -51,11 +51,35 @@ export function numInCart() {
 }
 
 /**
+ * function to add a new product to the cart. deliveryOptionId defaults to '1' (free shipping, seven day delivery)
+ * @param {number} productId the id of the product that is beign added 
+ * @param {number} quantity the amount that is being added
+ */
+export function addToCart(productId, quantity) {
+  cart.push({ // if not, add to cart
+      productId: productId, //dataset gets the data-attributes, productId is the specific
+      quantity: quantity, // atrubute (it automatically switches to cammel case)
+      deliveryOptionId: '1'
+    });
+    saveToStorage();
+}
+
+/**
  * changes the amount of a specified item that is in the cart
  * @param {number} index the item's specified index
  * @param {number} newAmount the new amount to change to
  */
 export function changeAmount(index, newAmount) {
   cart[index].quantity = newAmount;
+  saveToStorage();
+}
+
+/**
+ * function to add more of a pre-existing product to the cart
+ * @param {number} index index of the item in the cart to add more of 
+ * @param {number} newAmount amount to add 
+ */
+export function addQuantity(index, newAmount) {
+cart[index].quantity += newAmount;
   saveToStorage();
 }

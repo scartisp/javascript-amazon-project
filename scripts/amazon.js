@@ -2,7 +2,7 @@
 
 //IMPORTED THINGS
 // import by using keyword import {thing to imnport} keyword from, and then path
-import { numInCart, saveToStorage, isInCart, cart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
+import { numInCart, isInCart, addQuantity, addToCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
 // Example: import {cart as myCart} ...
 import { products } from '../data/products.js';
 import { centsToDollars } from './utils/money.js';
@@ -72,29 +72,20 @@ allProducts.innerHTML = productsHTML;
 // adds functionality for the "add product" button that each product has
 document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventListener
   ('click', () => {
-    let productId = button.dataset.productId
+    const productId = button.dataset.productId;
+    const indexInCart = isInCart(productId);
+    const quantity = Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
+    
+    if (indexInCart >= 0) { // if item already in cart, increase quantity
+      addQuantity(indexInCart, quantity);
+      //cart[indexInCart].quantity += Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
+    } else {
+      addToCart(productId, quantity);
+    }
     showAndHideAdded(productId);
-    addToCart(productId);
+    //addToCart(productId);
     cartQuantity.innerHTML = numInCart();
   }));
-
-/**
- * function that adds a selected item to the cart
- * @param {string} productId the selected product's ID
- */
-function addToCart(productId) {
-  let indexInCart = isInCart(productId);
-  if (indexInCart >= 0) { // if item already in cart, increase quantity
-    cart[indexInCart].quantity += Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
-  } else {
-    cart.push({ // if not, add to cart
-      productId: productId, //dataset gets the data-attributes, productId is the specific
-      quantity: Number(document.querySelector(`.js-quantity-selector-${productId}`).value), // atrubute (it automatically switches to cammel case)
-      deliveryOptionId: '1'
-    });
-  }
-  saveToStorage();
-}
 
 /**
  * helper function for showing and hiding the "added" message
