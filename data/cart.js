@@ -83,3 +83,8 @@ export function addQuantity(index, newAmount) {
 cart[index].quantity += newAmount;
   saveToStorage();
 }
+
+export function updateDeliveryOption(index, deliverOptionId) {
+  cart[index].deliveryOptionId = deliverOptionId;
+  saveToStorage();
+}

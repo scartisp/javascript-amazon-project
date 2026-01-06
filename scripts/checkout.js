@@ -1,7 +1,7 @@
 // written by: Simion Cartis
 
 // IMPORTED THINGS
-import { cart, removeCartItem, numInCart, isInCart, changeAmount } from '../data/cart.js';
+import { cart, removeCartItem, numInCart, isInCart, changeAmount, updateDeliveryOption } from '../data/cart.js';
 import deliveryOptions from '../data/deliveryOptions.js';
 import { products } from '../data/products.js'; //this is called a named export, used when files export multipe things
 import { centsToDollars } from './utils/money.js';
@@ -20,6 +20,7 @@ function displayHTML() {
   deleteButton();
   updateLink();
   saveLink();
+  changeDeliveryDate();
   addButtonKeyListeners();
 }
 
@@ -29,6 +30,7 @@ function displayHTML() {
  */
 function createCartHTML() {
   let cartSummaryHTML = '';
+
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
     let matchingProduct;
@@ -36,11 +38,14 @@ function createCartHTML() {
       if (product.id === productId)
         matchingProduct = product;
     });
+
+    const deliveryDate = getDeliveryDate(cartItem);
+
     cartSummaryHTML +=
       `
     <div class="cart-item-container js-cart-item-container-${productId}">
-      <div class="delivery-date">
-        Delivery date: Tuesday, June 21
+      <div class="delivery-date js-delivery-date${productId}">
+        Delivery date: ${deliveryDate.format('dddd, MMMM D')}
       </div>
 
       <div class="cart-item-details-grid">
@@ -73,7 +78,7 @@ function createCartHTML() {
           <div class="delivery-options-title">
             Choose a delivery option:
           </div>
-          ${deliverOptionsHTML(matchingProduct, cartItem)}
+          ${deliverOptionsHTML(cartItem)}
         </div>
       </div>
     </div>
@@ -84,21 +89,21 @@ function createCartHTML() {
 }
 
 /**
- * 
- * @param {*} productId 
- * @returns 
+ * generates the delivery option html for a given cart itme
+ * @param {object} cartItem the cart item that the delivery options are being generated for  
+ * @returns returns a string that is the html for the delivery options
  */
-function deliverOptionsHTML(matchingProduct, cartItem) {
+function deliverOptionsHTML(cartItem) {
   let HTML = '';
   const today = dayjs();
   deliveryOptions.forEach((deliveryOption) => {
     const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
     const priceString = deliveryOption.priceCents === 0 ? 'FREE Shipping' : `$${centsToDollars(deliveryOption.priceCents)} - Shipping`;
     const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
-    HTML += `<div class="delivery-option">
+    HTML += `<div class="delivery-option js-delivery-option" data-product-id="${cartItem.productId}" data-delivery-option-id="${deliveryOption.id}">
             <input type="radio" ${isChecked ? 'checked' : ''}
               class="delivery-option-input"
-              name="delivery-option-${matchingProduct.id}">
+              name="delivery-option-${cartItem.productId}">
             <div>
               <div class="delivery-option-date">
                 ${deliveryDate.format('dddd, MMMM D')}
@@ -110,6 +115,32 @@ function deliverOptionsHTML(matchingProduct, cartItem) {
           </div>`;
   })
   return HTML;
+}
+function changeDeliveryDate() {
+  document.querySelectorAll('.js-delivery-option').forEach(element => element.addEventListener('click', () => {
+    const { productId, deliveryOptionId } = element.dataset;
+    const indexInCart = isInCart(productId);
+    updateDeliveryOption(indexInCart, deliveryOptionId);
+
+    const deliveryDate = getDeliveryDate(cart[indexInCart]);
+    document.querySelector(`.js-delivery-date${productId}`).innerHTML = `Delivery date: ${deliveryDate.format('dddd, MMMM D')}`
+
+  }))
+}
+
+/**
+ * helper function that finds the delivery date for a given item in the cart
+ * @param {object} cartItem the cart item that you are trying to get the delivery date for 
+ * @returns returns the delivery date (determined by delivery option selected by user)
+ */
+function getDeliveryDate(cartItem) {
+  const deliverOptionId = cartItem.deliveryOptionId;
+  let matchingDelivery;
+  deliveryOptions.forEach((deliverOption) => {
+    if (deliverOption.id === deliverOptionId)
+      matchingDelivery = deliverOption;
+  })
+  return dayjs().add(matchingDelivery.deliveryDays, 'days');
 }
 
 /**
@@ -159,7 +190,6 @@ function saveFunctionality(productId) {
   document.querySelector(`.js-cart-item-container-${productId}`).classList.remove('is-editing-quantity');
   const indexInCart = isInCart(productId);
   const newQuantity = Number(document.querySelector(`.js-quantity-input-${productId}`).value);
-  console.log(document.querySelector(`.js-quantity-input-${productId}`).value);
   if (document.querySelector(`.js-quantity-input-${productId}`).value === '') {
     console.error('no amount specified');
     return;

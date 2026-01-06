@@ -12,9 +12,8 @@ const allProducts = document.querySelector('.js-products-gird');
 // div that holds the number displayed for the total in cart
 const cartQuantity = document.querySelector('.js-cart-quantity');
 
-cartQuantity.innerHTML = numInCart();
-
 // generates the HTML for this page
+cartQuantity.innerHTML = numInCart();
 let productsHTML = '';
 products.forEach((product) => {
   productsHTML += `
@@ -75,15 +74,12 @@ document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventLi
     const productId = button.dataset.productId;
     const indexInCart = isInCart(productId);
     const quantity = Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
-    
-    if (indexInCart >= 0) { // if item already in cart, increase quantity
+
+    if (indexInCart >= 0) // if item already in cart, increase quantity
       addQuantity(indexInCart, quantity);
-      //cart[indexInCart].quantity += Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
-    } else {
+    else
       addToCart(productId, quantity);
-    }
     showAndHideAdded(productId);
-    //addToCart(productId);
     cartQuantity.innerHTML = numInCart();
   }));
 
