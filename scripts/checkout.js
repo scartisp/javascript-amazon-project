@@ -15,7 +15,6 @@ displayHTML();
  */
 function displayHTML() {
   updateReturnToHomeLink();
-  //createCartHTML();
   orderSummary.innerHTML = createCartHTML();
   deleteButton();
   updateLink();
@@ -116,16 +115,17 @@ function deliverOptionsHTML(cartItem) {
   })
   return HTML;
 }
+
+/**
+ * function to change the delivery date of a specified item from a click
+ */
 function changeDeliveryDate() {
   document.querySelectorAll('.js-delivery-option').forEach(element => element.addEventListener('click', () => {
     const { productId, deliveryOptionId } = element.dataset;
     const indexInCart = isInCart(productId);
     updateDeliveryOption(indexInCart, deliveryOptionId);
-
-    const deliveryDate = getDeliveryDate(cart[indexInCart]);
-    document.querySelector(`.js-delivery-date${productId}`).innerHTML = `Delivery date: ${deliveryDate.format('dddd, MMMM D')}`
-
-  }))
+    displayHTML();
+  }));
 }
 
 /**
