@@ -1,6 +1,7 @@
 // written by: Simion Cartis
 
 // IMPORTED THINGS
+import { renderPaymentSummary } from './paymentSummary.js';
 import { cart, removeCartItem, numInCart, isInCart, changeAmount, updateDeliveryOption } from '../../data/cart.js';
 import deliveryOptions from '../../data/deliveryOptions.js';
 import { products } from '../../data/products.js'; //this is called a named export, used when files export multipe things
@@ -32,11 +33,7 @@ function createCartHTML() {
 
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
-    let matchingProduct;
-    products.forEach((product) => {
-      if (product.id === productId)
-        matchingProduct = product;
-    });
+    let matchingProduct = getItemInCart(productId);
 
     const deliveryDate = getDeliveryDate(cartItem);
 
@@ -85,6 +82,16 @@ function createCartHTML() {
   }); // the delivery date selector is of type "radio" basically, what that does is, if different selectors have the same
   // "name" attribute, only one can be slected at a time
   return cartSummaryHTML;
+}
+
+export function getItemInCart(productId) {
+  let matchingProduct;
+  products.forEach((product) => {
+    if (product.id === productId)
+      matchingProduct = product;
+  });
+
+  return matchingProduct;
 }
 
 /**
@@ -152,6 +159,7 @@ function deleteButton() {
       const productId = link.dataset.productId;
       removeCartItem(productId);
       document.querySelector(`.js-cart-item-container-${productId}`).remove();
+      renderPaymentSummary();
       updateReturnToHomeLink();
     });
   });
@@ -205,6 +213,7 @@ function saveFunctionality(productId) {
     changeAmount(indexInCart, newQuantity);
     document.querySelector(`.js-quantity-label${productId}`).innerHTML = newQuantity;
   }
+  renderPaymentSummary();
   updateReturnToHomeLink();
 }
 /**
