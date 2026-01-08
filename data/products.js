@@ -659,3 +659,17 @@ export const products = [
     ]
   }
 ];
+/**
+ * finds the cart item's matching product (the product that the cart item is)
+ * @param {string} productId the cart item's product id used to find the matching product 
+ * @returns the product object that is the same as the desired cart item
+ */
+export function getProduct(productId) {
+  let matchingProduct;
+  products.forEach((product) => {
+    if (product.id === productId)
+      matchingProduct = product;
+  });
+
+  return matchingProduct;
+}

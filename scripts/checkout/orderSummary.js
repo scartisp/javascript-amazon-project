@@ -3,10 +3,10 @@
 // IMPORTED THINGS
 import { renderPaymentSummary } from './paymentSummary.js';
 import { cart, removeCartItem, numInCart, isInCart, changeAmount, updateDeliveryOption } from '../../data/cart.js';
-import deliveryOptions from '../../data/deliveryOptions.js';
-import { products } from '../../data/products.js'; //this is called a named export, used when files export multipe things
+import { deliveryOptions } from '../../data/deliveryOptions.js'; //this is called a named export, used when files export multipe things
 import { centsToDollars } from '../utils/money.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js' // without the {} it is called the default export, used when wanting to export a single thing
+import { getProduct } from '../../data/products.js';
 // DOM THINGS
 const orderSummary = document.querySelector('.js-order-summary');
 const returnToHomeLink = document.querySelector('.js-return-to-home-link');
@@ -15,8 +15,8 @@ renderOrderSummary();
  * function that is first called to dynamically make the html and functionalities
  */
 export function renderOrderSummary() {
-  updateReturnToHomeLink();
   orderSummary.innerHTML = createCartHTML();
+  updateReturnToHomeLink();
   deleteButton();
   updateLink();
   saveLink();
@@ -33,7 +33,7 @@ function createCartHTML() {
 
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
-    let matchingProduct = getItemInCart(productId);
+    const matchingProduct = getProduct(productId);
 
     const deliveryDate = getDeliveryDate(cartItem);
 
@@ -84,16 +84,6 @@ function createCartHTML() {
   return cartSummaryHTML;
 }
 
-export function getItemInCart(productId) {
-  let matchingProduct;
-  products.forEach((product) => {
-    if (product.id === productId)
-      matchingProduct = product;
-  });
-
-  return matchingProduct;
-}
-
 /**
  * generates the delivery option html for a given cart itme
  * @param {object} cartItem the cart item that the delivery options are being generated for  
@@ -132,6 +122,7 @@ function changeDeliveryDate() {
     const indexInCart = isInCart(productId);
     updateDeliveryOption(indexInCart, deliveryOptionId);
     renderOrderSummary();
+    renderPaymentSummary();
   }));
 }
 
