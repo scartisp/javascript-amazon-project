@@ -4,7 +4,7 @@
  * @returns {number} the same value but as a dollar representation (rounded to two decimal places)
  */
 export function centsToDollars (priceInCents) {
-  return (priceInCents/100).toFixed(2);
+  return (Math.round(priceInCents)/100).toFixed(2);
 }
 
 // export default centsToDollars;
