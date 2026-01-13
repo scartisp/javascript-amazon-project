@@ -2,21 +2,19 @@
 
 // IMPORTED THINGS
 import { renderPaymentSummary } from './paymentSummary.js';
-import { cart, removeCartItem, numInCart, isInCart, changeAmount, updateDeliveryOption } from '../../data/cart.js';
-import { deliveryOptions } from '../../data/deliveryOptions.js'; //this is called a named export, used when files export multipe things
+import { cart, removeCartItem, isInCart, changeAmount, updateDeliveryOption } from '../../data/cart.js';
+import { deliveryOptions, calculateDeliveryDate} from '../../data/deliveryOptions.js'; //this is called a named export, used when files export multipe things
 import { centsToDollars } from '../utils/money.js';
-import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js' // without the {} it is called the default export, used when wanting to export a single thing
 import { getProduct } from '../../data/products.js';
+import { renderCheckoutHeader } from './checkoutHeader.js';
+import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js' // without the {} it is called the default export, used when wanting to export a single thing
 // DOM THINGS
 const orderSummary = document.querySelector('.js-order-summary');
-const returnToHomeLink = document.querySelector('.js-return-to-home-link');
-renderOrderSummary();
 /**
  * function that is first called to dynamically make the html and functionalities
  */
 export function renderOrderSummary() {
   orderSummary.innerHTML = createCartHTML();
-  updateReturnToHomeLink();
   deleteButton();
   updateLink();
   saveLink();
@@ -91,9 +89,8 @@ function createCartHTML() {
  */
 function deliverOptionsHTML(cartItem) {
   let HTML = '';
-  const today = dayjs();
-  deliveryOptions.forEach((deliveryOption) => {
-    const deliveryDate = today.add(deliveryOption.deliveryDays, 'days');
+ deliveryOptions.forEach((deliveryOption) => {
+    const deliveryDate = calculateDeliveryDate(deliveryOption);
     const priceString = deliveryOption.priceCents === 0 ? 'FREE Shipping' : `$${centsToDollars(deliveryOption.priceCents)} - Shipping`;
     const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
     HTML += `<div class="delivery-option js-delivery-option" data-product-id="${cartItem.productId}" data-delivery-option-id="${deliveryOption.id}">
@@ -149,9 +146,9 @@ function deleteButton() {
     link.addEventListener('click', () => {
       const productId = link.dataset.productId;
       removeCartItem(productId);
-      document.querySelector(`.js-cart-item-container-${productId}`).remove();
+      renderOrderSummary();
       renderPaymentSummary();
-      updateReturnToHomeLink();
+      renderCheckoutHeader();
     });
   });
 }
@@ -198,14 +195,13 @@ function saveFunctionality(productId) {
     return;
   } else if (newQuantity === 0) {
     removeCartItem(productId);
-    document.querySelector(`.js-cart-item-container-${productId}`).remove();
+    renderOrderSummary();
   } else {
-    //cart[indexInCart].quantity = newQuantity;
     changeAmount(indexInCart, newQuantity);
     document.querySelector(`.js-quantity-label${productId}`).innerHTML = newQuantity;
   }
   renderPaymentSummary();
-  updateReturnToHomeLink();
+  renderCheckoutHeader();
 }
 /**
  * adds key listeners to the document
@@ -222,11 +218,4 @@ function addButtonKeyListeners() {
       });
     }
   });
-}
-
-/**
- * function that updates the number found at the top of the checkout page
- */
-function updateReturnToHomeLink() {
-  returnToHomeLink.innerHTML = numInCart() === 1 ? numInCart() + ' item' : numInCart() + ' items';
 }

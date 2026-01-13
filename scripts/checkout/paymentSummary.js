@@ -1,5 +1,5 @@
 // written by: Simion Cartis
-import { cart } from "../../data/cart.js";
+import { cart, numInCart } from "../../data/cart.js";
 import { centsToDollars } from "../utils/money.js";
 import { getProduct } from "../../data/products.js";
 import { getDeliveryDate } from "../../data/deliveryOptions.js";
@@ -29,7 +29,7 @@ export function renderPaymentSummary() {
           </div>
 
           <div class="payment-summary-row">
-            <div>Items (3):</div>
+            <div>Items (${numInCart()}):</div>
             <div class="payment-summary-money">$${centsToDollars(itemsPriceCents)}</div>
           </div>
 
