@@ -56,7 +56,7 @@ export function numInCart() {
  * @param {number} quantity the amount that is being added
  */
 export function addToCart(productId, quantity) {
-  cart.push({ // if not, add to cart
+  cart.push({ // if no instance of product in cart, add to cart
       productId: productId, //dataset gets the data-attributes, productId is the specific
       quantity: quantity, // atrubute (it automatically switches to cammel case)
       deliveryOptionId: '1'
