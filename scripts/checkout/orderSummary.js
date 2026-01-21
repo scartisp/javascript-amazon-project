@@ -7,14 +7,14 @@ import { deliveryOptions, calculateDeliveryDate} from '../../data/deliveryOption
 import { centsToDollars } from '../utils/money.js';
 import { getProduct } from '../../data/products.js';
 import { renderCheckoutHeader } from './checkoutHeader.js';
-import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js' // without the {} it is called the default export, used when wanting to export a single thing
+import dayjs from 'dayjs'; // without the {} it is called the default export, used when wanting to export a single thing
 // DOM THINGS
 const orderSummary = document.querySelector('.js-order-summary');
 /**
  * function that is first called to dynamically make the html and functionalities
  */
-export function renderOrderSummary() {
-  orderSummary.innerHTML = createCartHTML();
+export function renderOrderSummary(container = orderSummary) {
+  container.innerHTML = createCartHTML();
   deleteButton();
   updateLink();
   saveLink();
@@ -37,7 +37,7 @@ function createCartHTML() {
 
     cartSummaryHTML +=
       `
-    <div class="cart-item-container js-cart-item-container-${productId}">
+    <div class="cart-item-container js-cart-item-container js-cart-item-container-${productId}">
       <div class="delivery-date js-delivery-date${productId}">
         Delivery date: ${deliveryDate.format('dddd, MMMM D')}
       </div>
