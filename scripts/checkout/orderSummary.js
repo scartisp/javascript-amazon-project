@@ -13,8 +13,8 @@ const orderSummary = document.querySelector('.js-order-summary');
 /**
  * function that is first called to dynamically make the html and functionalities
  */
-export function renderOrderSummary(container = orderSummary) {
-  container.innerHTML = createCartHTML();
+export function renderOrderSummary() {
+  document.querySelector('.js-order-summary').innerHTML = createCartHTML();
   deleteButton();
   updateLink();
   saveLink();
@@ -53,7 +53,7 @@ function createCartHTML() {
           <div class="product-price">
             $${centsToDollars(matchingProduct.priceCents)}
           </div>
-          <div class="product-quantity">
+          <div class="product-quantity js-product-quantity-${productId}">
             <span>
               Quantity: <span class="quantity-label js-quantity-label${productId}">${cartItem.quantity}</span>
             </span>
@@ -62,7 +62,7 @@ function createCartHTML() {
             </span>
             <input class="quantity-input js-quantity-input-${productId}"> </input>
             <span class="save-quantity-link link-primary js-save-quantity-link" data-product-id="${productId}"> Save </span>
-            <span class="delete-quantity-link link-primary js-delete-link" data-product-id="${productId}">
+            <span class="delete-quantity-link link-primary js-delete-link js-delete-link-${productId}" data-product-id="${productId}">
               Delete
             </span>
           </div>
