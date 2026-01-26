@@ -7,7 +7,8 @@ describe('testing centsToDollars', () => {
     [0, '0.00'],
     [2000.5, '20.01'],
     [2000.4, '20.00'],
-    [999999, '9999.99']
+    [999999, '9999.99'],
+    [-2095, '-20.95']
   ])('formats %p cents as %s', (input, expected) => {
     expect(centsToDollars(input)).toBe(expected);
   });

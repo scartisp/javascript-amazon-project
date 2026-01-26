@@ -2,7 +2,6 @@
 // imports
 import { renderOrderSummary } from '../../scripts/checkout/orderSummary.js';
 import { addToCart, cart } from '../../data/cart.js';
-import { renderPaymentSummary } from '../../scripts/checkout/paymentSummary.js';
 
 // global variables
 const id1 = 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6';
