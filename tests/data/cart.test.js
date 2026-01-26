@@ -61,19 +61,20 @@ describe('testing removeCartItem', () => {
     addToCart(id1, 1);
     addToCart(id2, 1);
     removeCartItem(id2);
-    
+
     expect(cart.length).toBe(1);
     expect(cart[0].productId).toBe(id1);
     expect(JSON.parse(localStorage.getItem('cart'))).toEqual(cart);
   });
   test('testing removing an item that is not in the cart', () => {
-    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => { }); //create a mock of console.error
     addToCart(id1, 1);
     removeCartItem(id2);
 
     expect(cart.length).toBe(1);
     expect(cart[0].productId).toBe(id1);
     expect(spy).toHaveBeenCalled();
+
     spy.mockRestore();
   });
 });

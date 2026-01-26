@@ -25,7 +25,7 @@ beforeEach(() => {
   renderOrderSummary();
 });
 
-describe('test suite: render Order summary', () => {
+describe('testing renderOrderSummary', () => {
   test('displays the cart', () => {
     expect(document.querySelectorAll('.js-cart-item-container').length).toBe(2);
     expect(document.querySelector(`.js-product-quantity-${id1}`).textContent).toContain('Quantity: 1');
