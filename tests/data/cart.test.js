@@ -1,7 +1,14 @@
 // written by: Simion Cartis 
-import { addToCart, addQuantity, cart } from '../../data/cart.js';
 
-const id1 = 'e43638ce-6aa0-4b85-b27f-e1d07eb678c6';
+//Imported things
+import { addToCart, addQuantity, cart, removeCartItem } from '../../data/cart.js';
+import { products } from '../../data/products.js';
+import { jest } from '@jest/globals';
+
+
+//global variables 
+const id1 = products[0].id;
+const id2 = products[1].id;
 
 beforeEach(() => {
   cart.length = 0;
@@ -38,5 +45,35 @@ describe('testing addQuantity', () => {
     expect(cart[0].quantity).toBe(2);
     expect(JSON.parse(localStorage.getItem('cart'))).toEqual(cart);
   });
+});
 
+describe('testing removeCartItem', () => {
+  test('testing removing the first item from the cart', () => {
+    addToCart(id1, 1);
+    addToCart(id2, 1);
+    removeCartItem(id1);
+
+    expect(cart.length).toBe(1);
+    expect(cart[0].productId).toBe(id2);
+    expect(JSON.parse(localStorage.getItem('cart'))).toEqual(cart);
+  });
+  test('testing removing the second item from the cart', () => {
+    addToCart(id1, 1);
+    addToCart(id2, 1);
+    removeCartItem(id2);
+    
+    expect(cart.length).toBe(1);
+    expect(cart[0].productId).toBe(id1);
+    expect(JSON.parse(localStorage.getItem('cart'))).toEqual(cart);
+  });
+  test('testing removing an item that is not in the cart', () => {
+    const spy = jest.spyOn(console, 'error').mockImplementation(() => {})
+    addToCart(id1, 1);
+    removeCartItem(id2);
+
+    expect(cart.length).toBe(1);
+    expect(cart[0].productId).toBe(id1);
+    expect(spy).toHaveBeenCalled();
+    spy.mockRestore();
+  });
 });
