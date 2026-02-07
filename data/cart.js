@@ -57,11 +57,11 @@ export function numInCart() {
  */
 export function addToCart(productId, quantity) {
   cart.push({ // if no instance of product in cart, add to cart
-      productId: productId, //dataset gets the data-attributes, productId is the specific
-      quantity: quantity, // atrubute (it automatically switches to cammel case)
-      deliveryOptionId: '1'
-    });
-    saveToStorage();
+    productId: productId, //dataset gets the data-attributes, productId is the specific
+    quantity: quantity, // atrubute (it automatically switches to cammel case)
+    deliveryOptionId: '1'
+  });
+  saveToStorage();
 }
 
 /**
@@ -80,11 +80,13 @@ export function changeAmount(index, newAmount) {
  * @param {number} newAmount amount to add 
  */
 export function addQuantity(index, newAmount) {
-cart[index].quantity += newAmount;
+  cart[index].quantity += newAmount;
   saveToStorage();
 }
 
 export function updateDeliveryOption(index, deliverOptionId) {
+  if (index < 0 || index >= cart.length)
+    return -1;
   cart[index].deliveryOptionId = deliverOptionId;
   saveToStorage();
 }
