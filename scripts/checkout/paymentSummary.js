@@ -30,27 +30,27 @@ export function renderPaymentSummary() {
 
           <div class="payment-summary-row">
             <div>Items (${numInCart()}):</div>
-            <div class="payment-summary-money">$${centsToDollars(itemsPriceCents)}</div>
+            <div class="payment-summary-money js-payment-summary-money-items">$${centsToDollars(itemsPriceCents)}</div>
           </div>
 
           <div class="payment-summary-row">
             <div>Shipping &amp; handling:</div>
-            <div class="payment-summary-money">$${centsToDollars(shippingTotalCents)}</div>
+            <div class="payment-summary-money js-payment-summary-money-shipping">$${centsToDollars(shippingTotalCents)}</div>
           </div>
 
           <div class="payment-summary-row subtotal-row">
             <div>Total before tax:</div>
-            <div class="payment-summary-money">$${centsToDollars(itemsPriceCents+shippingTotalCents)}</div>
+            <div class="payment-summary-money js-payment-summary-money-before-tax">$${centsToDollars(itemsPriceCents+shippingTotalCents)}</div>
           </div>
 
           <div class="payment-summary-row">
             <div>Estimated tax (10%):</div>
-            <div class="payment-summary-money">$${centsToDollars(taxCents)}</div>
+            <div class="payment-summary-money js-payment-summary-money-tax">$${centsToDollars(taxCents)}</div>
           </div>
 
           <div class="payment-summary-row total-row">
             <div>Order total:</div>
-            <div class="payment-summary-money">$${centsToDollars(orderTotalCents)}</div>
+            <div class="payment-summary-money js-payment-summary-money-total">$${centsToDollars(orderTotalCents)}</div>
           </div>
 
           <button class="place-order-button button-primary">

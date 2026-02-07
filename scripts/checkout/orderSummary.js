@@ -93,9 +93,9 @@ function deliverOptionsHTML(cartItem) {
     const deliveryDate = calculateDeliveryDate(deliveryOption);
     const priceString = deliveryOption.priceCents === 0 ? 'FREE Shipping' : `$${centsToDollars(deliveryOption.priceCents)} - Shipping`;
     const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
-    HTML += `<div class="delivery-option js-delivery-option" data-product-id="${cartItem.productId}" data-delivery-option-id="${deliveryOption.id}">
+    HTML += `<div class="delivery-option js-delivery-option js-deliver-option-${cartItem.productId}-${deliveryOption.id}" data-product-id="${cartItem.productId}" data-delivery-option-id="${deliveryOption.id}">
             <input type="radio" ${isChecked ? 'checked' : ''}
-              class="delivery-option-input"
+              class="delivery-option-input js-delivery-option-input-${cartItem.productId}-${deliveryOption.id}" 
               name="delivery-option-${cartItem.productId}">
             <div>
               <div class="delivery-option-date">
