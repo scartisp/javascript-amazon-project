@@ -1,4 +1,29 @@
 //data structure that holds all the products. it is an array of objects
+import {centsToDollars} from '../scripts/utils/money.js';
+
+class Product {
+  id;
+  image;
+  name;
+  rating;
+  priceCents;
+
+  constructor(productDetails) {
+    this.id = productDetails.id;
+    this.image = productDetails.image;
+    this.name = productDetails.name;
+    this.rating = productDetails.rating;
+    this.priceCents = productDetails.priceCents;
+  }
+
+  getStarsUrl(){
+    return `images/ratings/rating-${this.rating.stars * 10}.png`;
+  }
+  getPrice(){
+    return `$${centsToDollars(this.priceCents)}`;
+  }
+}
+
 export const products = [
   {
     id: "e43638ce-6aa0-4b85-b27f-e1d07eb678c6",
@@ -658,7 +683,13 @@ export const products = [
       "mens"
     ]
   }
-];
+].map((productDetails) => {
+  return new Product(productDetails);
+}); //.map() applies a function to every element in an array and then creates a new array out of the returns.
+// because I am creating an array while doing this, the new array is being assigned to "products" and the old one is forgotten
+
+console.log(products);
+
 /**
  * finds the cart item's matching product (the product that the cart item is)
  * @param {string} productId the cart item's product id used to find the matching product 
