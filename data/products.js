@@ -688,8 +688,6 @@ export const products = [
 }); //.map() applies a function to every element in an array and then creates a new array out of the returns.
 // because I am creating an array while doing this, the new array is being assigned to "products" and the old one is forgotten
 
-console.log(products);
-
 /**
  * finds the cart item's matching product (the product that the cart item is)
  * @param {string} productId the cart item's product id used to find the matching product 
