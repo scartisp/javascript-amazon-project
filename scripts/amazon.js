@@ -5,7 +5,6 @@
 import { numInCart, isInCart, addQuantity, addToCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
 // Example: import {cart as myCart} ...
 import { products } from '../data/products.js';
-import { centsToDollars } from './utils/money.js';
 //DOM THINGS
 // div that holds all of the products on the main page
 const allProducts = document.querySelector('.js-products-gird');
@@ -51,6 +50,8 @@ products.forEach((product) => {
             <option value="10">10</option>
           </select>
         </div>
+
+        ${product.extraInfoHTML()}
 
         <div class="product-spacer"></div>
 
