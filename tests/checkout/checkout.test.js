@@ -5,10 +5,19 @@ import { renderOrderSummary, } from '../../scripts/checkout/orderSummary.js';
 import { addToCart, cart, updateDeliveryOption } from '../../data/cart.js';
 import { products } from '../../data/products.js';
 import { centsToDollars } from '../../scripts/utils/money.js';
+import { loadProducts } from '../../data/products.js';
 
 // global variables
-const id1 = products[0].id;
-const id2 = products[1].id;
+let id1;
+let id2;
+
+beforeAll((done) => {
+  loadProducts(() => {
+    id1 = products[0].id;
+    id2 = products[1].id;
+    done();
+  });
+});
 
 beforeEach(() => {
   cart.length = 0;

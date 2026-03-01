@@ -1,14 +1,24 @@
 // written by: Simion Cartis 
 
 //Imported things
-import { addToCart, addQuantity, cart, removeCartItem, updateDeliveryOption } from '../../data/cart.js';
+import { addToCart, addQuantity, cart, removeCartItem, updateDeliveryOption, isInCart } from '../../data/cart.js';
 import { products } from '../../data/products.js';
 import { describe, jest } from '@jest/globals';
-
+import { loadProducts } from '../../data/products.js';
 
 //global variables 
-const id1 = products[0].id;
-const id2 = products[1].id;
+let id1;
+let id2;
+
+beforeAll((done) => {
+  loadProducts(() => {
+    id1 = products[0].id;
+    id2 = products[1].id;
+    done();
+  });
+});
+
+
 
 beforeEach(() => {
   cart.length = 0;
@@ -83,14 +93,14 @@ describe('testing updateDeliveryOption', () => {
   test('updating delivery option', () => {
     addToCart(id1, 1);
     updateDeliveryOption(0, 2);
-    
+
     expect(cart[0].deliveryOptionId).toBe(2);
     expect(JSON.parse(localStorage.getItem('cart'))[0].deliveryOptionId).toEqual(2);
   });
   test('updating delivery option for item not in the cart', () => {
     addToCart(id1, 1);
 
-    expect(updateDeliveryOption(-1,2)).toBe(-1);
-    expect(updateDeliveryOption(1,2)).toBe(-1);
+    expect(updateDeliveryOption(-1, 2)).toBe(-1);
+    expect(updateDeliveryOption(1, 2)).toBe(-1);
   });
 });
