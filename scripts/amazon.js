@@ -4,18 +4,21 @@
 // import by using keyword import {thing to imnport} keyword from, and then path
 import { numInCart, isInCart, addQuantity, addToCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
 // Example: import {cart as myCart} ...
-import { products } from '../data/products.js';
+import { products, loadProducts } from '../data/products.js';
 //DOM THINGS
 // div that holds all of the products on the main page
 const allProducts = document.querySelector('.js-products-gird');
 // div that holds the number displayed for the total in cart
 const cartQuantity = document.querySelector('.js-cart-quantity');
 
+loadProducts(renderProductsHTML);
+
 // generates the HTML for this page
-cartQuantity.innerHTML = numInCart();
-let productsHTML = '';
-products.forEach((product) => {
-  productsHTML += `
+function renderProductsHTML() {
+  cartQuantity.innerHTML = numInCart();
+  let productsHTML = '';
+  products.forEach((product) => {
+    productsHTML += `
    <div class="product-container">
         <div class="product-image-container">
           <img class="product-image" src=${product.image}>
@@ -66,23 +69,25 @@ products.forEach((product) => {
         </button>
       </div>
   `;
-}); // data-product-name is called a data attribute. Use the word data- and anything you want
-allProducts.innerHTML = productsHTML;
+  }); // data-product-name is called a data attribute. Use the word data- and anything you want
+  allProducts.innerHTML = productsHTML;
 
-// adds functionality for the "add product" button that each product has
-document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventListener
-  ('click', () => {
-    const productId = button.dataset.productId;
-    const indexInCart = isInCart(productId);
-    const quantity = Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
 
-    if (indexInCart >= 0) // if item already in cart, increase quantity
-      addQuantity(indexInCart, quantity);
-    else
-      addToCart(productId, quantity);
-    showAndHideAdded(productId);
-    cartQuantity.innerHTML = numInCart();
-  }));
+  // adds functionality for the "add product" button that each product has
+  document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventListener
+    ('click', () => {
+      const productId = button.dataset.productId;
+      const indexInCart = isInCart(productId);
+      const quantity = Number(document.querySelector(`.js-quantity-selector-${productId}`).value);
+
+      if (indexInCart >= 0) // if item already in cart, increase quantity
+        addQuantity(indexInCart, quantity);
+      else
+        addToCart(productId, quantity);
+      showAndHideAdded(productId);
+      cartQuantity.innerHTML = numInCart();
+    }));
+}
 
 /**
  * helper function for showing and hiding the "added" message
