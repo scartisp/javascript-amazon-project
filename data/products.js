@@ -75,7 +75,6 @@ class Appliance extends Product {
 }
 
 export const products = []
-
 export function loadProducts(fun = () => { }) {
   //console.log(typeof fun);
   const xhr = new XMLHttpRequest();
