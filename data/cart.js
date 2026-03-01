@@ -83,7 +83,11 @@ export function addQuantity(index, newAmount) {
   cart[index].quantity += newAmount;
   saveToStorage();
 }
-
+/**
+ * function to change a cart item's delivery date
+ * @param {number} index index of the cart item whose delivery date you wish to change 
+ * @param {string} deliverOptionId  id for the new delivery option
+ */
 export function updateDeliveryOption(index, deliverOptionId) {
   if (index < 0 || index >= cart.length)
     return -1;
