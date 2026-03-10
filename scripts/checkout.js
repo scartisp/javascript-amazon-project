@@ -3,13 +3,10 @@ import { renderPaymentSummary } from "./checkout/paymentSummary.js";
 import { renderCheckoutHeader } from "./checkout/checkoutHeader.js";
 import { loadProducts, products } from "../data/products.js";
 
-
-loadProducts().then(() => { // after products are loaded, render the page.
-  renderOrderSummary();
-  renderPaymentSummary();
-  renderCheckoutHeader();
-})
-
+await loadProducts() //await is the same thing as using then(), it waits for the promise to be fulfilled
+renderOrderSummary();
+renderPaymentSummary();
+renderCheckoutHeader();
 
 
 /*you can run multiple promises simultaneously with promise.all() 
