@@ -11,7 +11,8 @@ const allProducts = document.querySelector('.js-products-gird');
 // div that holds the number displayed for the total in cart
 const cartQuantity = document.querySelector('.js-cart-quantity');
 
-loadProducts(renderProductsHTML);
+await loadProducts();
+renderProductsHTML();
 
 // generates the HTML for this page
 function renderProductsHTML() {
