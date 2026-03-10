@@ -7,7 +7,7 @@ import { deliveryOptions, calculateDeliveryDate} from '../../data/deliveryOption
 import { centsToDollars } from '../utils/money.js';
 import { getProduct } from '../../data/products.js';
 import { renderCheckoutHeader } from './checkoutHeader.js';
-import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js' // without the {} it is called the default export, used when wanting to export a single thing
+import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js'; // without the {} it is called the default export, used when wanting to export a single thing
 // DOM THINGS
 const orderSummary = document.querySelector('.js-order-summary');
 /**

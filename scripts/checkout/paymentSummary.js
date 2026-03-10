@@ -4,17 +4,18 @@ import { centsToDollars } from "../utils/money.js";
 import { getProduct } from "../../data/products.js";
 import { getDeliveryDate } from "../../data/deliveryOptions.js";
 import { addOrder } from "../../data/orders.js";
+import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 // DOM THINGS
 const paymentSummaryDiv = document.querySelector('.js-payment-summary');
 /**
  * dynammically creates the HTML for the payment summary section of the checkout page 
 */
+let orderTotalCents = 0;
 export function renderPaymentSummary() {
   let itemsPriceCents = 0;
   let shippingTotalCents = 0;
   let taxCents = 0;
-  let orderTotalCents = 0;
   cart.forEach(cartItem => {
     const product = getProduct(cartItem.productId);
     itemsPriceCents += product.priceCents * cartItem.quantity;
@@ -75,12 +76,18 @@ function PlaceOrderEventListener() {
           cart: cart
         })
       });
-    const order = await response.json()
-    addOrder(order);
+      const order = await response.json()
+
+      addOrder({
+        date: dayjs().format('MMMM D'),
+        costInCents: orderTotalCents,
+        id: crypto.randomUUID(),
+        items: order
+      });
     } catch (error) {
       console.error(`placing order failed. ${error}`);
     }
 
-    window.location.href = 'orders.html';
+   // window.location.href = 'orders.html';
   });
 }
