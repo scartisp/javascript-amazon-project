@@ -3,12 +3,13 @@ import { cart, numInCart } from "../../data/cart.js";
 import { centsToDollars } from "../utils/money.js";
 import { getProduct } from "../../data/products.js";
 import { getDeliveryDate } from "../../data/deliveryOptions.js";
+import { addOrder } from "../../data/orders.js";
 
 // DOM THINGS
 const paymentSummaryDiv = document.querySelector('.js-payment-summary');
 /**
  * dynammically creates the HTML for the payment summary section of the checkout page 
- */
+*/
 export function renderPaymentSummary() {
   let itemsPriceCents = 0;
   let shippingTotalCents = 0;
@@ -16,23 +17,23 @@ export function renderPaymentSummary() {
   let orderTotalCents = 0;
   cart.forEach(cartItem => {
     const product = getProduct(cartItem.productId);
-      itemsPriceCents += product.priceCents * cartItem.quantity;
+    itemsPriceCents += product.priceCents * cartItem.quantity;
     const deliveryDate = getDeliveryDate(cartItem.deliveryOptionId);
     shippingTotalCents += deliveryDate.priceCents;
   });
-  taxCents = (itemsPriceCents+shippingTotalCents)*.1;
+  taxCents = (itemsPriceCents + shippingTotalCents) * .1;
   orderTotalCents = taxCents + itemsPriceCents + shippingTotalCents;
 
   const paymentSummaryHTML = `<div class="payment-summary">
-          <div class="payment-summary-title">
-            Order Summary
-          </div>
-
-          <div class="payment-summary-row">
-            <div>Items (${numInCart()}):</div>
-            <div class="payment-summary-money">$${centsToDollars(itemsPriceCents)}</div>
-          </div>
-
+  <div class="payment-summary-title">
+  Order Summary
+  </div>
+  
+  <div class="payment-summary-row">
+  <div>Items (${numInCart()}):</div>
+  <div class="payment-summary-money">$${centsToDollars(itemsPriceCents)}</div>
+  </div>
+  
           <div class="payment-summary-row">
             <div>Shipping &amp; handling:</div>
             <div class="payment-summary-money">$${centsToDollars(shippingTotalCents)}</div>
@@ -40,7 +41,7 @@ export function renderPaymentSummary() {
 
           <div class="payment-summary-row subtotal-row">
             <div>Total before tax:</div>
-            <div class="payment-summary-money">$${centsToDollars(itemsPriceCents+shippingTotalCents)}</div>
+            <div class="payment-summary-money">$${centsToDollars(itemsPriceCents + shippingTotalCents)}</div>
           </div>
 
           <div class="payment-summary-row">
@@ -53,10 +54,33 @@ export function renderPaymentSummary() {
             <div class="payment-summary-money">$${centsToDollars(orderTotalCents)}</div>
           </div>
 
-          <button class="place-order-button button-primary">
+          <button class="place-order-button button-primary js-place-order">
             Place your order
           </button>
         </div>`
   paymentSummaryDiv.innerHTML = paymentSummaryHTML;
 
+  PlaceOrderEventListener();
+}
+
+function PlaceOrderEventListener() {
+  document.querySelector('.js-place-order').addEventListener('click', async () => {
+    try {
+      const response = await fetch('https://supersimplebackend.dev/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          cart: cart
+        })
+      });
+    const order = await response.json()
+    addOrder(order);
+    } catch (error) {
+      console.error(`placing order failed. ${error}`);
+    }
+
+    window.location.href = 'orders.html';
+  });
 }

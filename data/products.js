@@ -75,14 +75,21 @@ class Appliance extends Product {
 }
 
 export const products = []
-
+/**
+ * retrieves the list of products from a back end using fetch
+ * @returns {promise} the promise that retrieves the list of products
+ */
 export function loadProducts() {
   const promise = fetch( //you can save in an object, it returns a promise
     'https://supersimplebackend.dev/products')
-    .then((response) => {
+    .then(response => {
+      if (!response.ok) {
+        console.log('fuck');
+        throw new Error(`HTTP error. Status: ${response.status}`);
+      }
       return response.json(); //response.json() is a promise after returning a promise, you can add a then() to it. so this chain is pretty much response.json().then()
-                              //fetch automatically returns a promise
-    }).then((productsData) => {
+      //fetch automatically returns a promise
+    }).then(productsData => {
       products.push(...productsData.map((productDetails) => {
         if (productDetails.type === 'clothing')
           return new Clothing(productDetails);
@@ -91,36 +98,14 @@ export function loadProducts() {
         else
           return new Product(productDetails);
       }));
-
       console.log('products loaded');
-    });
-    return promise;
+    })
+    .catch(error => {
+      console.error(`loadProducts failed ${error}`);
+      throw error;
+    })
+  return promise;
 }
-
-// loadProductsFetch().then(() => {
-//   console.log('next step');
-// });//since the function returns a promise, you can add a then to do something after the promise
-
-// export function loadProducts(fun = () => { }) {
-//   const xhr = new XMLHttpRequest();
-
-//   xhr.addEventListener('load', () => {
-//     products.push(...JSON.parse(xhr.response).map((productDetails) => {
-//       if (productDetails.type === 'clothing')
-//         return new Clothing(productDetails);
-//       else if (productDetails.type === 'appliance')
-//         return new Appliance(productDetails);
-//       else
-//         return new Product(productDetails);
-//     }));
-
-//     console.log('products loaded')
-//     fun();
-//   });
-
-//   xhr.open('GET', 'https://supersimplebackend.dev/products');
-//   xhr.send();
-// }
 
 /**
  * finds the cart item's matching product (the product that the cart item is)
