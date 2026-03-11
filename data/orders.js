@@ -1,33 +1,18 @@
 // Written by: Simion Cartis
 
-class Order {
-  date;
-  costInCents;
-  id;
-  items;
-
-  constructor(orderDetails) {
-    this.date = orderDetails.date;
-    this.costInCents = orderDetails.costInCents;
-    this.id = orderDetails.id;
-    this.items = orderDetails.items;
-  }
-
-  getDate() {
-    return this.date;
-  }
-}
+import { centsToDollars } from '../scripts/utils/money.js';
 
 export const orders = JSON.parse(localStorage.getItem('orders')) || [];
 
-export function addOrder(orderDetails) {
-  const order = new Order(orderDetails);
+export function addOrder(order) {
   orders.unshift(order);
   saveToStorage();
-  console.log(typeof order);
-  console.log(order.date);
 }
 
 function saveToStorage() {
   localStorage.setItem('orders', JSON.stringify(orders));
+}
+
+export function priceOfOrder (order) {
+  return `${centsToDollars(order.totalCostCents)}`;
 }

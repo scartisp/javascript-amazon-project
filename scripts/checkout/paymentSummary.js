@@ -1,10 +1,9 @@
 // written by: Simion Cartis
-import { cart, numInCart } from "../../data/cart.js";
+import { cart, numInCart, clearCart } from "../../data/cart.js";
 import { centsToDollars } from "../utils/money.js";
 import { getProduct } from "../../data/products.js";
 import { getDeliveryDate } from "../../data/deliveryOptions.js";
 import { addOrder } from "../../data/orders.js";
-import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 // DOM THINGS
 const paymentSummaryDiv = document.querySelector('.js-payment-summary');
@@ -64,6 +63,9 @@ export function renderPaymentSummary() {
   PlaceOrderEventListener();
 }
 
+/**
+ * event listener for placing an order, goes to order page and clears the cart
+ */
 function PlaceOrderEventListener() {
   document.querySelector('.js-place-order').addEventListener('click', async () => {
     try {
@@ -77,17 +79,12 @@ function PlaceOrderEventListener() {
         })
       });
       const order = await response.json()
-
-      addOrder({
-        date: dayjs().format('MMMM D'),
-        costInCents: orderTotalCents,
-        id: crypto.randomUUID(),
-        items: order
-      });
+      addOrder(order);
     } catch (error) {
       console.error(`placing order failed. ${error}`);
     }
+    clearCart();
 
-   // window.location.href = 'orders.html';
+    window.location.href = 'orders.html';
   });
 }
