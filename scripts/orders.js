@@ -3,11 +3,12 @@ import { orders, priceOfOrder } from '../data/orders.js';
 import { getProduct } from '../data/products.js';
 import { loadProducts } from '../data/products.js';
 const ordersGrid = document.querySelector('.js-orders-grid');
+import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 
 await loadProducts();
 renderOrders();
-//TODO: make order place date correct as well as arrival date
+//TODO: make arrival date correct
 //TODO: adding empty cart to order crashes order page, fix
 /**
  * renders the order page information
@@ -15,7 +16,6 @@ renderOrders();
 export function renderOrders() {
   ordersGrid.innerHTML = '';
   let ordersGridHTML = ``;
-  console.log(orders.length)
   console.log(orders);
   orders.forEach(order => {
     const items = order.products;
@@ -25,7 +25,7 @@ export function renderOrders() {
             <div class="order-header-left-section">
               <div class="order-date">
                 <div class="order-header-label">Order Placed:</div>
-                <div>${order.orderTime}</div>
+                <div>${dayjs(order.orderTime).format('MMMM D')}</div>
               </div>
               <div class="order-total">
                 <div class="order-header-label">Total:</div>
