@@ -7,7 +7,6 @@ import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 const ordersGrid = document.querySelector('.js-orders-grid');
 const cartQuantity = document.querySelector('.js-cart-quantity');
-
 await loadProducts();
 renderOrders();
 
@@ -15,6 +14,8 @@ renderOrders();
  * renders the order page information
  */
 export function renderOrders() {
+   cartQuantity.innerHTML = numInCart();
+
   ordersGrid.innerHTML = '';
   let ordersGridHTML = ``;
   orders.forEach(order => {
@@ -52,7 +53,7 @@ export function renderOrders() {
  * @returns returns html that holds the rendered info
  */
 function generatorOrderDetails(items, order) {
-  cartQuantity.innerHTML = numInCart();
+  console.log(cartQuantity.innerHTML);
   let HTML = '';
   items.forEach(item => {
     const matchingProduct = getProduct(item.productId)
