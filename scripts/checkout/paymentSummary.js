@@ -69,6 +69,9 @@ export function renderPaymentSummary() {
 function PlaceOrderEventListener() {
   document.querySelector('.js-place-order').addEventListener('click', async () => {
     try {
+      if (cart.length === 0) {
+        throw new Error('cannot place order on an empty cart');
+      }
       const response = await fetch('https://supersimplebackend.dev/orders', {
         method: 'POST',
         headers: {
@@ -80,11 +83,10 @@ function PlaceOrderEventListener() {
       });
       const order = await response.json()
       addOrder(order);
+      clearCart();
+      window.location.href = 'orders.html';
     } catch (error) {
       console.error(`placing order failed. ${error}`);
     }
-    clearCart();
-
-    window.location.href = 'orders.html';
   });
 }

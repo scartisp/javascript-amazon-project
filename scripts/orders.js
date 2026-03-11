@@ -1,22 +1,22 @@
 // Written by: Simion Cartis
 import { orders, priceOfOrder } from '../data/orders.js';
-import { getProduct } from '../data/products.js';
-import { loadProducts } from '../data/products.js';
-const ordersGrid = document.querySelector('.js-orders-grid');
+import { getProduct, loadProducts } from '../data/products.js';
+import { calculateDeliveryDate } from '../data/deliveryOptions.js'
+import { isInCart, addToCart, addQuantity, numInCart } from '../data/cart.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
+const ordersGrid = document.querySelector('.js-orders-grid');
+const cartQuantity = document.querySelector('.js-cart-quantity');
 
 await loadProducts();
 renderOrders();
-//TODO: make arrival date correct
-//TODO: adding empty cart to order crashes order page, fix
+
 /**
  * renders the order page information
  */
 export function renderOrders() {
   ordersGrid.innerHTML = '';
   let ordersGridHTML = ``;
-  console.log(orders);
   orders.forEach(order => {
     const items = order.products;
     ordersGridHTML += `
@@ -40,7 +40,7 @@ export function renderOrders() {
           </div>
 
           <div class="order-details-grid js-order-details-grid">
-            ${generatorOrderDetails(items)}
+            ${generatorOrderDetails(items, order)}
         </div>
       </div>`;
   });
@@ -51,10 +51,15 @@ export function renderOrders() {
  * @param {Array} items the order whose information is being generated 
  * @returns returns html that holds the rendered info
  */
-function generatorOrderDetails(items) {
+function generatorOrderDetails(items, order) {
+  cartQuantity.innerHTML = numInCart();
   let HTML = '';
   items.forEach(item => {
     const matchingProduct = getProduct(item.productId)
+    const orderDate = dayjs(order.orderTime)
+    const deliveryDate = dayjs(item.estimatedDeliveryTime)
+    //const arrivalDate = calculateDeliveryDate(deliveryDate, orderDate);
+    const arrivalDate = findArrivalDate(deliveryDate, orderDate)
     HTML +=
       `<div class="product-image-container">
               <img src="${matchingProduct.image}">
@@ -65,12 +70,12 @@ function generatorOrderDetails(items) {
                 ${matchingProduct.name}
               </div>
               <div class="product-delivery-date">
-                Arriving on: August 15
+                Arriving on: ${dayjs(arrivalDate).format('MMMM D')}
               </div>
               <div class="product-quantity">
                 Quantity: ${item.quantity}
               </div>
-              <button class="buy-again-button button-primary">
+              <button class="buy-again-button button-primary js-buy-again-button" data-product-id="${item.productId}">
                 <img class="buy-again-icon" src="images/icons/buy-again.png">
                 <span class="buy-again-message">Buy it again</span>
               </button>
@@ -86,3 +91,25 @@ function generatorOrderDetails(items) {
   });
   return HTML;
 }
+
+/**
+ * helper function to calculate correct expected delivery date. The back end does not skip weekends, so I needed to add this function
+ * @param {object} deliveryDate the incorrect expected delivery date gotten from the backend 
+ * @param {object} orderDate the date the item was ordered
+ * @returns returns the expected delivery date which accounts for weekends.
+ */
+function findArrivalDate(deliveryDate, orderDate) {
+  const TimeUntilDelivery = deliveryDate.diff(orderDate, 'd');
+  return calculateDeliveryDate(TimeUntilDelivery, orderDate);
+}
+
+document.querySelectorAll('.js-buy-again-button').forEach(button => {
+  button.addEventListener('click', () => {
+    const productId = button.dataset.productId;
+    const index = isInCart(productId);
+    if(index >= 0)
+      addQuantity(index, 1);
+    else
+      addToCart(productId, 1);
+  })
+})

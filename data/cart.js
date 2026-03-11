@@ -94,6 +94,10 @@ export function updateDeliveryOption(index, deliverOptionId) {
   cart[index].deliveryOptionId = deliverOptionId;
   saveToStorage();
 }
+
+// export function getDeliveryOption(index) {
+//   return cart[index].deliverOptionId;
+// }
 /**
  * function for clearing the cart
  */

@@ -3,7 +3,7 @@
 // IMPORTED THINGS
 import { renderPaymentSummary } from './paymentSummary.js';
 import { cart, removeCartItem, isInCart, changeAmount, updateDeliveryOption } from '../../data/cart.js';
-import { deliveryOptions, calculateDeliveryDate} from '../../data/deliveryOptions.js'; //this is called a named export, used when files export multipe things
+import { deliveryOptions, calculateDeliveryDate, getDeliveryDate} from '../../data/deliveryOptions.js'; //this is called a named export, used when files export multipe things
 import { centsToDollars } from '../utils/money.js';
 import { getProduct } from '../../data/products.js';
 import { renderCheckoutHeader } from './checkoutHeader.js';
@@ -32,8 +32,7 @@ function createCartHTML() {
   cart.forEach((cartItem) => {
     const productId = cartItem.productId;
     const matchingProduct = getProduct(productId);
-
-    const deliveryDate = getDeliveryDate(cartItem);
+    const deliveryDate = calculateDeliveryDate(getDeliveryDate(cartItem.deliveryOptionId).deliveryDays);
 
     cartSummaryHTML +=
       `
@@ -90,7 +89,7 @@ function createCartHTML() {
 function deliverOptionsHTML(cartItem) {
   let HTML = '';
  deliveryOptions.forEach((deliveryOption) => {
-    const deliveryDate = calculateDeliveryDate(deliveryOption);
+    const deliveryDate = calculateDeliveryDate(deliveryOption.deliveryDays);
     const priceString = deliveryOption.priceCents === 0 ? 'FREE Shipping' : `$${centsToDollars(deliveryOption.priceCents)} - Shipping`;
     const isChecked = deliveryOption.id === cartItem.deliveryOptionId;
     HTML += `<div class="delivery-option js-delivery-option" data-product-id="${cartItem.productId}" data-delivery-option-id="${deliveryOption.id}">
@@ -121,21 +120,6 @@ function changeDeliveryDate() {
     renderOrderSummary();
     renderPaymentSummary();
   }));
-}
-
-/**
- * helper function that finds the delivery date for a given item in the cart
- * @param {object} cartItem the cart item that you are trying to get the delivery date for 
- * @returns returns the delivery date (determined by delivery option selected by user)
- */
-function getDeliveryDate(cartItem) {
-  const deliverOptionId = cartItem.deliveryOptionId;
-  let matchingDelivery;
-  deliveryOptions.forEach((deliverOption) => {
-    if (deliverOption.id === deliverOptionId)
-      matchingDelivery = deliverOption;
-  })
-  return dayjs().add(matchingDelivery.deliveryDays, 'days');
 }
 
 /**

@@ -33,17 +33,16 @@ export function getDeliveryDate(cartItemDeliveryId) {
 }
 
 /**
- * function to calulate a delivery date based on the current date and given a delivery option
- * @param {object} deliveryOption the delivery option that is used to calculate the delivery date 
+ * function to calulate a delivery date based on the current date and given number of days until delivery
+ * @param {number} daysUntilDelivery the amount of days until delivery. Intended to be derived from deliveryOptions.deliveryDays
+ * @param {object} currDay a day object that is used as the starting point to calculate delivery date. Defaults to the current day
  * @returns {object} returns the delivery date
  */
-export function calculateDeliveryDate(deliveryOption) {
-  let currDay = dayjs();
-  let daysLeft = deliveryOption.deliveryDays;
-  while (daysLeft > 0) {
+export function calculateDeliveryDate(daysUntilDelivery, currDay = dayjs()) {
+  while (daysUntilDelivery > 0) {
     currDay = currDay.add(1, 'day');
     if (!isWeekend(currDay))
-      --daysLeft;
+      --daysUntilDelivery;
   }
   return currDay;
 }
