@@ -56,6 +56,7 @@ function generatorOrderDetails(items, order) {
   console.log(cartQuantity.innerHTML);
   let HTML = '';
   items.forEach(item => {
+    console.log(item);
     const matchingProduct = getProduct(item.productId)
     const orderDate = dayjs(order.orderTime)
     const deliveryDate = dayjs(item.estimatedDeliveryTime)
@@ -83,7 +84,7 @@ function generatorOrderDetails(items, order) {
             </div>
 
             <div class="product-actions">
-              <a href="tracking.html">
+              <a href="tracking.html?${order.id}&${item.productId}">
                 <button class="track-package-button button-secondary">
                   Track package
                 </button>
