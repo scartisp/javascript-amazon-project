@@ -2,9 +2,12 @@
 
 import { loadProducts, getProduct } from "../data/products.js";
 import { getOrder, getItemInOrder, findArrivalDate } from "../data/orders.js";
+import { numInCart } from "../data/cart.js";
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 const orderTracking = document.querySelector('.js-order-tracking');
+const cartQuantity = document.querySelector('.js-cart-quantity');
+
 await loadProducts();
 renderTracking();
 
@@ -12,6 +15,7 @@ renderTracking();
  * dyncamically generate the html for the tracking page
  */
 function renderTracking() {
+  cartQuantity.innerHTML = numInCart();
   const url = new URL(window.location.href)
 
   const itemId = url.searchParams.get('itemId');
@@ -23,8 +27,8 @@ function renderTracking() {
   const deliveryDate = dayjs(matchingItem.estimatedDeliveryTime);
   const orderDate = dayjs(matchingOrder.orderTime)
   const arrivalDate = findArrivalDate(deliveryDate, orderDate);
-  const timeUntilArrival = (dayjs().date(`23`).diff(orderDate, 'd')/arrivalDate.diff(orderDate, 'd'))*100
-
+  const timeUntilArrival = (dayjs().diff(orderDate, 'd')/arrivalDate.diff(orderDate, 'd'))*100
+  //console.log(dayjs().date(14).diff(orderDate, 'd'));
 
   const orderTrackingHTML = `
   <a class="back-to-orders-link link-primary" href="orders.html">
