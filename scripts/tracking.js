@@ -3,12 +3,16 @@
 import { loadProducts, getProduct } from "../data/products.js";
 import { getOrder, getItemInOrder, findArrivalDate } from "../data/orders.js";
 import { numInCart } from "../data/cart.js";
+import { search } from "./searchBar.js";
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 const orderTracking = document.querySelector('.js-order-tracking');
 const cartQuantity = document.querySelector('.js-cart-quantity');
+const searchBar = document.querySelector('.js-search-bar');
+const searchButton = document.querySelector('.js-search-button');
 
 await loadProducts();
+search(searchBar, searchButton);
 renderTracking();
 
 /**

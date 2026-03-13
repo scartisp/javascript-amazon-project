@@ -5,20 +5,33 @@
 import { numInCart, isInCart, addQuantity, addToCart } from '../data/cart.js'; // can rename imported things using 'as' keyword.
 // Example: import {cart as myCart} ...
 import { products, loadProducts } from '../data/products.js';
+import { search } from './searchBar.js';
 //DOM THINGS
 // div that holds all of the products on the main page
 const allProducts = document.querySelector('.js-products-gird');
 // div that holds the number displayed for the total in cart
 const cartQuantity = document.querySelector('.js-cart-quantity');
+const searchBar = document.querySelector('.js-search-bar');
+const searchButton = document.querySelector('.js-search-button');
 
 await loadProducts();
+search(searchBar, searchButton);
 renderProductsHTML();
 
 // generates the HTML for this page
 function renderProductsHTML() {
   cartQuantity.innerHTML = numInCart();
   let productsHTML = '';
-  products.forEach((product) => {
+
+  const url = new URL(window.location.href)
+  let productsToDisplay = [];
+  if (url.searchParams.size === 0) {
+    productsToDisplay = products;
+  } else {
+    findProductsToDisplay(productsToDisplay, url.searchParams.get('search'));
+  }
+
+  productsToDisplay.forEach((product) => {
     productsHTML += `
    <div class="product-container">
         <div class="product-image-container">
@@ -73,7 +86,6 @@ function renderProductsHTML() {
   }); // data-product-name is called a data attribute. Use the word data- and anything you want
   allProducts.innerHTML = productsHTML;
 
-
   // adds functionality for the "add product" button that each product has
   document.querySelectorAll('.js-add-to-cart').forEach(button => button.addEventListener
     ('click', () => {
@@ -89,6 +101,19 @@ function renderProductsHTML() {
       cartQuantity.innerHTML = numInCart();
     }));
 }
+
+  function findProductsToDisplay(productsToDisplay, searchParam) {
+    products.forEach(product => {
+      if (product.name.toLowerCase().includes(searchParam))
+        productsToDisplay.push(product);
+      else {
+        product.keyWords.forEach(keyWord => {
+          if (keyWord.toLowerCase().includes(searchParam))
+            productsToDisplay.push(product);
+        });
+      }
+    });
+  }
 
 /**
  * helper function for showing and hiding the "added" message

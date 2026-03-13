@@ -2,11 +2,15 @@
 import { orders, priceOfOrder, findArrivalDate } from '../data/orders.js';
 import { getProduct, loadProducts } from '../data/products.js';
 import { isInCart, addToCart, addQuantity, numInCart } from '../data/cart.js';
+import { search } from './searchBar.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
 const ordersGrid = document.querySelector('.js-orders-grid');
 const cartQuantity = document.querySelector('.js-cart-quantity');
+const searchBar = document.querySelector('.js-search-bar');
+const searchButton = document.querySelector('.js-search-button');
 await loadProducts();
+search(searchBar, searchButton);
 renderOrders();
 
 /**
@@ -58,7 +62,7 @@ function generatorOrderDetails(items, order) {
     const matchingProduct = getProduct(item.productId)
     const orderDate = dayjs(order.orderTime)
     const deliveryDate = dayjs(item.estimatedDeliveryTime)
-     console.log(item);
+    console.log(item);
     const arrivalDate = findArrivalDate(deliveryDate, orderDate)
     HTML +=
       `<div class="product-image-container">
