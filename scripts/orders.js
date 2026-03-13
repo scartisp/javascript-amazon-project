@@ -1,7 +1,6 @@
 // Written by: Simion Cartis
-import { orders, priceOfOrder } from '../data/orders.js';
+import { orders, priceOfOrder, findArrivalDate } from '../data/orders.js';
 import { getProduct, loadProducts } from '../data/products.js';
-import { calculateDeliveryDate } from '../data/deliveryOptions.js'
 import { isInCart, addToCart, addQuantity, numInCart } from '../data/cart.js';
 import dayjs from 'https://unpkg.com/supersimpledev@8.5.0/dayjs/esm/index.js';
 
@@ -14,11 +13,12 @@ renderOrders();
  * renders the order page information
  */
 export function renderOrders() {
-   cartQuantity.innerHTML = numInCart();
+  cartQuantity.innerHTML = numInCart();
 
   ordersGrid.innerHTML = '';
   let ordersGridHTML = ``;
   orders.forEach(order => {
+    // console.log(order);
     const items = order.products;
     ordersGridHTML += `
     <div class="order-container">
@@ -53,14 +53,12 @@ export function renderOrders() {
  * @returns returns html that holds the rendered info
  */
 function generatorOrderDetails(items, order) {
-  console.log(cartQuantity.innerHTML);
   let HTML = '';
   items.forEach(item => {
-    console.log(item);
     const matchingProduct = getProduct(item.productId)
     const orderDate = dayjs(order.orderTime)
     const deliveryDate = dayjs(item.estimatedDeliveryTime)
-    //const arrivalDate = calculateDeliveryDate(deliveryDate, orderDate);
+     console.log(item);
     const arrivalDate = findArrivalDate(deliveryDate, orderDate)
     HTML +=
       `<div class="product-image-container">
@@ -84,7 +82,7 @@ function generatorOrderDetails(items, order) {
             </div>
 
             <div class="product-actions">
-              <a href="tracking.html?${order.id}&${item.productId}">
+              <a href="tracking.html?orderId=${order.id}&itemId=${item.productId}">
                 <button class="track-package-button button-secondary">
                   Track package
                 </button>
@@ -94,22 +92,22 @@ function generatorOrderDetails(items, order) {
   return HTML;
 }
 
-/**
- * helper function to calculate correct expected delivery date. The back end does not skip weekends, so I needed to add this function
- * @param {object} deliveryDate the incorrect expected delivery date gotten from the backend 
- * @param {object} orderDate the date the item was ordered
- * @returns returns the expected delivery date which accounts for weekends.
- */
-function findArrivalDate(deliveryDate, orderDate) {
-  const TimeUntilDelivery = deliveryDate.diff(orderDate, 'd');
-  return calculateDeliveryDate(TimeUntilDelivery, orderDate);
-}
+// /**
+//  * helper function to calculate correct expected delivery date. The back end does not skip weekends, so I needed to add this function
+//  * @param {object} deliveryDate the incorrect expected delivery date gotten from the backend 
+//  * @param {object} orderDate the date the item was ordered
+//  * @returns returns the expected delivery date which accounts for weekends.
+//  */
+// function findArrivalDate(deliveryDate, orderDate) {
+//   const TimeUntilDelivery = deliveryDate.diff(orderDate, 'd');
+//   return calculateDeliveryDate(TimeUntilDelivery, orderDate);
+// }
 
 document.querySelectorAll('.js-buy-again-button').forEach(button => {
   button.addEventListener('click', () => {
     const productId = button.dataset.productId;
     const index = isInCart(productId);
-    if(index >= 0)
+    if (index >= 0)
       addQuantity(index, 1);
     else
       addToCart(productId, 1);
