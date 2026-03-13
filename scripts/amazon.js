@@ -102,18 +102,23 @@ function renderProductsHTML() {
     }));
 }
 
-  function findProductsToDisplay(productsToDisplay, searchParam) {
-    products.forEach(product => {
-      if (product.name.toLowerCase().includes(searchParam))
-        productsToDisplay.push(product);
-      else {
-        product.keyWords.forEach(keyWord => {
-          if (keyWord.toLowerCase().includes(searchParam))
-            productsToDisplay.push(product);
-        });
-      }
-    });
-  }
+/**
+ * function for filling productsToDisplay array if there is a search param
+ * @param {Array} productsToDisplay the array that will be used to contain all products that will be displayed
+ * @param {string} searchParam the string used to filter the products
+ */
+function findProductsToDisplay(productsToDisplay, searchParam) {
+  products.forEach(product => {
+    if (product.name.toLowerCase().includes(searchParam))
+      productsToDisplay.push(product);
+    else {
+      product.keyWords.forEach(keyWord => {
+        if (keyWord.toLowerCase().includes(searchParam))
+          productsToDisplay.push(product);
+      });
+    }
+  });
+}
 
 /**
  * helper function for showing and hiding the "added" message

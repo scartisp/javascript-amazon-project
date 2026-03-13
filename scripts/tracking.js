@@ -32,7 +32,6 @@ function renderTracking() {
   const orderDate = dayjs(matchingOrder.orderTime)
   const arrivalDate = findArrivalDate(deliveryDate, orderDate);
   const timeUntilArrival = (dayjs().diff(orderDate, 'd')/arrivalDate.diff(orderDate, 'd'))*100
-  //console.log(dayjs().date(14).diff(orderDate, 'd'));
 
   const orderTrackingHTML = `
   <a class="back-to-orders-link link-primary" href="orders.html">
