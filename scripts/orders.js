@@ -96,17 +96,6 @@ function generatorOrderDetails(items, order) {
   return HTML;
 }
 
-// /**
-//  * helper function to calculate correct expected delivery date. The back end does not skip weekends, so I needed to add this function
-//  * @param {object} deliveryDate the incorrect expected delivery date gotten from the backend 
-//  * @param {object} orderDate the date the item was ordered
-//  * @returns returns the expected delivery date which accounts for weekends.
-//  */
-// function findArrivalDate(deliveryDate, orderDate) {
-//   const TimeUntilDelivery = deliveryDate.diff(orderDate, 'd');
-//   return calculateDeliveryDate(TimeUntilDelivery, orderDate);
-// }
-
 document.querySelectorAll('.js-buy-again-button').forEach(button => {
   button.addEventListener('click', () => {
     const productId = button.dataset.productId;
@@ -115,5 +104,6 @@ document.querySelectorAll('.js-buy-again-button').forEach(button => {
       addQuantity(index, 1);
     else
       addToCart(productId, 1);
+    cartQuantity.innerHTML = numInCart();
   })
 })
